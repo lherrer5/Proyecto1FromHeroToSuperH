@@ -1,0 +1,9 @@
+POST http://localhost:3050/productos HTTP/1.1
+Content-Type: application/json
+
+{
+    "nombre":"Aprende aritmetica",
+    "precio":"23",
+    "unidades":"157800",
+    "descripción":"basico"
+}

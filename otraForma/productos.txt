@@ -1,0 +1,2 @@
+{"id":1,"nombre":"Aprende aritmetica","precio":"aritmetica","unidades":"157800","categoria":"aritmetica","descripción":"basico"}
+{"id":2,"nombre":"lina","precio":"25","unidades":"10","categoria":"persona","descripción":"la mejor estudiante"}
