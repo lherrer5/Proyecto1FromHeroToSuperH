@@ -1,9 +1,13 @@
 const express = require("express");
 const fs = require("fs");
+//Creo mi app con función express()
 const app = express();
+//Creo puerto
 const PORT = 3030;
 
-// Middleware para parsear el body de las solicitudes
+// Middleware (q se ejecutan despues de recibir la solicitud y antes d enviar la respuesta) para parsear el body de las solicitudes
+//analiza los datos enviados en la solicitud HTTP con el tipo de contenido application/json
+//La función express.json() analiza estos datos JSON y los convierte en un objeto JavaScript agregandolos a la request de la solicitud
 app.use(express.json());
 
 // Ruta para obtener todos los productos
@@ -11,55 +15,51 @@ app.get("/productos", (req, res) => {
   //se utiliza la función readFile del modulo fs para leer el contenido del archivo productos.txt en formato de texto (utf8). 
   //Callback se ejecuta cuando se completa la operación de lectura
     fs.readFile("productos.txt", "utf8", (err, data) => {
+  //si algo sale mal, envio mensaje de error al cliente
     if (err) {
       console.error(err);
-      //envio mensaje de error al cliente
       res.status(500).send("Error al obtener los productos");
       return;
     }
   
-    //Si la lectura del archivo es exitosa, el contenido se almacena en data. 
-    const productos = data
-    //.trim() se utiliza para eliminar cualquier espacio en blanco adicional que pueda existir al inicio 
-    //o al final de cada línea del archivo "productos.txt" antes de procesar su contenido
-      .trim()
-    //split("\n") se utiliza para dividir la cadena de texto data en subcadenas más pequeñas, utilizando como 
-    //separador el carácter de salto de línea (\n). Como el archivo "productos.txt" contiene una lista de productos, 
-    //cada producto se escribe en una línea separada. Al utilizar split("\n"), la cadena de texto data se divide en un array 
-    //de subcadenas, donde cada elemento del array es una línea del archivo "productos.txt".
-      .split("\n")
-      //Data se procesa para convertir cada línea en un objeto JavaScript mediante el método map y JSON.parse
-      //.map() recorre cada elemento del array de subcadenas (que se obtuvo al dividir la cadena de texto data) y aplica la función 
-      //JSON.parse() a cada elemento, para convertirlo en un objeto JavaScript devolviendo un nuevo array que contiene los objetos 
-      //JavaScript resultantes
-      .map((producto) => JSON.parse(producto));
-      //res.json envía la lista de objetos como una respuesta JSON al cliente
+  //Si la lectura del archivo es exitosa, el contenido se almacena en el segundo parametro data. 
+    const productos = data.trim().split("\n").map((producto) => JSON.parse(producto));
+    //.trim() se utiliza para eliminar cualquier espacio en blanco adicional que pueda existir al inicio o al final 
+    //de cada línea del archivo "productos.txt" antes de procesar su contenido
+
+    //.split("\n") para dividir la cadena de texto data en subcadenas más pequeñas, utilizando como separador el carácter
+    //de salto de línea (\n). Como el archivo productos.txt contiene una lista de productos, cada producto se escribe en una línea separada,
+    //es decir, la cadena de texto data se divide en un array de subcadenas,donde cada elemento del array es una línea del archivo.
+
+    //.map() recorre cada elemento del array de subcadenas y aplica la función JSON.parse() a cada elemento,
+    //para convertirlo en un objeto JavaScript devolviendo este nuevo array guardado en const productos
+    
+    //res.json envía el array guardado en const productos como una respuesta JSON al cliente
     res.json(productos);
   });
 });
 
 //GET con ID
-
 app.get("/productos/:id", (req, res) => {
-
     const id = req.params.id;
-    //const resultado = req.body;
-    //la función readFile() del módulo fs de Node.js lee el archivo productos.txt de forma asíncrona y 
-    //toma la callback que se ejecutará cuando se complete la lectura
+  //func readFile() del módulo fs de Node.js lee archivo productos.txt de forma asínc y ejecuta callback cuando se complete la lectura
       fs.readFile('productos.txt', 'utf8', (err, data) => {
         if (err) {
           console.error(err);
           res.status(500).send('Error al actualizar el producto');
           return;
         }
-     //.map() recorre cada elemento del array de subcadenas devolviendo un nuevo array que contiene el objeto dividido en líneas 
+    //.map() recorre cada elemento del array de subcadenas devolviendo un nuevo array que contiene el objeto dividido en líneas 
         let productos = data.trim().split('\n').map((producto) => JSON.parse(producto))
+    //filter() crea nuevo array con la linea q tiene id identico al pasado en la ruta
+    //.toString() convierte el id del producto a una cadena de texto para poderse comparar 
         .filter((producto) => producto.id.toString() === id);
-      
+    //se verifica ese nuevo array y si la long es 0 se indica q no se encontró el pdto  
         if (productos.length === 0) {
           res.status(404).send("Producto no encontrado");
           return;
         }
+    //sino, envio la respuesta JSON al cliente con el primer objeto del producto que se encontró en el nuevo array
         res.json(productos[0]);
       });
     });
@@ -78,8 +78,7 @@ app.post("/productos", (req, res) => {
         res.status(500).send("Error al agregar el producto");
         return;
       }
-  //res.status(201) genera el código de estado HTTP de la respuesta en "201 Created", 
-  //lo que indica que se ha creado un nuevo recurso en el servidor
+  //res.status(201) genera el código de estado HTTP de la rpta en "201 Created", indicando q se ha creado un nuevo recurso en el servidor
   //.json(nuevoProducto) hace q nuevoProducto se convierta en un objeto JSON y se envíe al cliente como la respuesta
       res.status(201).json(nuevoProducto);
     }
@@ -93,8 +92,7 @@ app.put('/productos/:id', (req, res) => {
   const id = req.params.id;
   //req.body es el objeto que contiene los datos enviados por el cliente en la solicitud PUT
   const datosActualizados = req.body;
-//la función readFile() del módulo fs de Node.js lee el archivo productos.txt de forma asíncrona y 
-//toma la callback que se ejecutará cuando se complete la lectura
+//func readFile() del módulo fs de Node lee el archivo productos.txt de forma asíncr y ejecuta la callback cuando se complete la lectura
   fs.readFile('productos.txt', 'utf8', (err, data) => {
     if (err) {
       console.error(err);
@@ -113,29 +111,29 @@ app.put('/productos/:id', (req, res) => {
     }
 
     // Actualizamos el objeto del producto encontrado con los nuevos datos de la solicitud HTTP
+    //Object.assign es un método d JavaScript q se utiliza pa copiar los valores d una o + propiedades d un objeto A a un objeto destino B
     Object.assign(productoActualizado, datosActualizados);
-    // Escribimos el objeto actualizado en el archivo productos.txt
     const contenidoActualizado = productos.map((producto) => JSON.stringify(producto)).join('\n');
+    // Escribo el objeto actualizado en el archivo productos.txt con func writeFile() del módulo fs de Node
     fs.writeFile('productos.txt', contenidoActualizado, 'utf8', (err) => {
       if (err) {
         console.error(err);
         res.status(500).send('Error al actualizar el producto');
         return;
       }
-      // Enviamos el objeto actualizado como respuesta
+      // Envio el objeto actualizado como respuesta en formato JSON
       res.json(productoActualizado);
     });
   });
 });
 
-// Ruta para actualizar para actualizar solo una pequeña parte de un pdto existente
+// Ruta para actualizar solo una pequeña parte de un pdto existente
 app.patch("/productos/:id", (req, res) => {
 //extraigo el parámetro :id de la URL y lo almaceno en la variable id
   const id = req.params.id;
 //req.body es el objeto que contiene los datos enviados por el cliente en la solicitud PATCH
   const datosActualizados = req.body;
-//la función readFile() del módulo fs de Node.js lee el archivo productos.txt de forma asíncrona y 
-//toma la callback que se ejecutará cuando se complete la lectura
+//la función readFile() del módulo fs de Node lee el archivo productos.txt de forma asínc y ejecuta la callback cuando se complete la lectura
   fs.readFile("productos.txt", "utf8", (err, data) => {
 //Si ocurre un error al leer el archivo, se devuelve un error 500 al cliente.
     if (err) {
@@ -143,25 +141,35 @@ app.patch("/productos/:id", (req, res) => {
       res.status(500).send("Error al actualizar el producto");
       return;
     }
-//El contenido del archivo se divide en líneas y se parsea cada línea en un objeto JSON. 
-//Estos objetos se almacenan en un array llamado productos.
-    let productos = data
-//.map() recorre cada elemento del array de subcadenas devolviendo un nuevo array que contiene el objeto dividido en líneas 
-      .trim().split("\n").map((producto) => JSON.parse(producto))
+
+    let productos = data.trim().split("\n").map((producto) => JSON.parse(producto))
       .filter((producto) => producto.id.toString() === id
       );
+  //.map() recorre cada elemento del array de subcadenas devolviendo un nuevo array que contiene el objeto dividido en líneas 
+  //se convierte cada línea en un objeto JSON con parse.Estos objetos se almacenan en un array llamado productos.
+  //filter() crea nuevo array con la linea q tiene id identico al pasado en la ruta
+  //.toString() convierte el id del producto a una cadena de texto para poderse comparar 
+
     if (productos.length === 0) {
+  //se verifica ese nuevo array y si la long es 0 se indica q no se encontró el pdto  
       res.status(404).send("Producto no encontrado");
       return;
     }
+  
+  //guardo el 1er pdto en la lista de productos en productoActualizado
     const productoActualizado = productos[0];
+  //con Object.assign copio los valores de las propiedades del objeto datosActualizados al objeto productoActualizado
     Object.assign(productoActualizado, datosActualizados); 
+  // Escribo el objeto actualizado en el archivo productos.txt con func writeFile() del módulo fs de Node
+  //Con el método JSON.stringify convierto el pdto de JSON a cadena de texto 
+  //.join pa unir todos los JSON (si son varios) en una sola cadena con saltos de línea \n entre cada objeto 
     fs.writeFile("productos.txt", productos.map((producto) => JSON.stringify(producto)).join("\n"), "utf8", (err) => {
       if (err) {
         console.error(err);
         res.status(500).send("Error al actualizar el producto");
         return;
       }
+  // Envio el objeto actualizado como respuesta en formato JSON
       res.json(productoActualizado);
     });
   });
@@ -172,21 +180,18 @@ app.patch("/productos/:id", (req, res) => {
 app.delete("/productos/:id", (req, res) => {
 //extraigo el parámetro :id de la URL y lo almaceno en la variable id
   const id = req.params.id;
-//la función readFile() del módulo fs de Node.js lee el archivo productos.txt de forma asíncrona y 
-//toma la callback que se ejecutará cuando se complete la lectura  
+//la func readFile() del módulo fs de Node lee el archivo productos.txt de forma asínc y ejecuta la callback cuando se complete la lectura
   fs.readFile("productos.txt", "utf8", (err, data) => {
     if (err) {
       console.error(err);
       res.status(500).send("Error al eliminar el producto");
       return;
     }
-//El contenido del archivo se divide en líneas y se parsea cada línea en un objeto JSON. 
-//Estos objetos se almacenan en un array llamado productos.
-    let productos = data
-      .trim()
-      .split("\n")
+
+    let productos = data.trim().split("\n").map((producto) => JSON.parse(producto));
 //.map() recorre cada elemento del array de subcadenas devolviendo un nuevo array que contiene el objeto dividido en líneas 
-      .map((producto) => JSON.parse(producto));
+//se convierte cada línea en un objeto JSON con parse.Estos objetos se almacenan en un array llamado productos.
+
 //busco el índice del objeto producto que coincide con el valor de id extraído de la solicitud HTTP utilizando el método findIndex().
     const indiceProducto = productos.findIndex(
       (producto) => producto.id.toString() === id
@@ -196,11 +201,12 @@ app.delete("/productos/:id", (req, res) => {
       res.status(404).send("Producto no encontrado");
       return;
     }
-//elimino el objeto producto correspondiente del array productos utilizando el método splice()
+//elimino el objeto pdto correspondiente del array productos utilizando el método splice()
 //El método devuelve un nuevo array con el/los elemento(s) eliminado(s), en este caso, un array que contiene un solo objeto producto. 
 //productoEliminado almacena el objeto producto eliminado
     const productoEliminado = productos.splice(indiceProducto, 1)[0];
-//.map recorre el array y transforma cada objeto del array productos en una cadena de texto JSON
+
+//.map recorre el array y transforma cada objeto del array productos en una cadena de texto JSON con el método JSON.stringify 
 //Estas cadenas de texto son unidas en una sola cadena utilizando el método join(), y separadas por un salto de línea (\n).
 //esa cadena resultante de join se utiliza para escribir los datos de los productos aún existentes en el archivo productos.txt
 //mediante la función fs.writeFile().
