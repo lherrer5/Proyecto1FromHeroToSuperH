@@ -1,1 +1,1 @@
-{"nombre":"Aprende aritmetica","precio":23,"unidades":157800,"descripción":"basico"}
+{"nombre":"camisa","precio":80,"unidades":30,"descripción":"camisa para mujer y hombre talla unica"}
