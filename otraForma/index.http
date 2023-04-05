@@ -10,6 +10,19 @@ Content-Type: application/json
     "descripción":"camisa para mujer y hombre talla unica"
 }
 
+###POST con ID unico
+POST http://localhost:3030/productos HTTP/1.1
+Content-Type: application/json
+
+{
+    "nombre":"bolso",
+    "precio":30,
+    "unidades":40,
+    "categoria":"mujer",
+    "descripción":"bolso para mujer en cuero"
+}
+
+
 ###
 PATCH  http://localhost:3030/productos/1 HTTP/1.1
 Content-Type: application/json
@@ -23,7 +36,7 @@ DELETE http://localhost:3030/productos/1 HTTP/1.1
 
 ###
 # GET CON ID
-GET http://localhost:3030/productos/2 HTTP/1.1
+GET http://localhost:3030/productos HTTP/1.1
 
 ###
 PUT http://localhost:3030/productos/1
@@ -33,9 +46,9 @@ Content-Type: application/json
     "id": 5,
     "nombre":"gorra",
     "precio":"50",
-    "unidades disponibles":"7",
+    "unidades":"7",
     "categoria":"niños",
-    "descripción larga":"gorra de algodon para niños"
+    "descripción":"gorra de algodon para niños"
 }
 
 ###

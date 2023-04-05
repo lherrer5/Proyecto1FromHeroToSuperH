@@ -66,23 +66,72 @@ app.get("/productos/:id", (req, res) => {
 
 
 // Ruta para agregar un nuevo producto
+// app.post("/productos", (req, res) => {
+//   //req.body es un objeto que contiene los datos enviados por el cliente en la solicitud POST
+//   const nuevoProducto = req.body;
+//   //la función appendFile() del módulo fs de Node.js agrega el contenido de nuevoProducto al final del archivo productos.txt".
+//   //Convierto el objeto nuevoProducto a una cadena de texto JSON y agrego un separador de línea ("\n") al final de la cadena
+//   //pa que c/producto esté en una línea separada.
+//   fs.appendFile("productos.txt", JSON.stringify(nuevoProducto) + "\n","utf8",(err) => {
+//       if (err) {
+//         console.error(err);
+//         res.status(500).send("Error al agregar el producto");
+//         return;
+//       }
+//   //res.status(201) genera el código de estado HTTP de la rpta en "201 Created", indicando q se ha creado un nuevo recurso en el servidor
+//   //.json(nuevoProducto) hace q nuevoProducto se convierta en un objeto JSON y se envíe al cliente como la respuesta
+//       res.status(201).json(nuevoProducto);
+//     }
+//   );
+// });
+
+//POST con ID único
 app.post("/productos", (req, res) => {
-  //req.body es un objeto que contiene los datos enviados por el cliente en la solicitud POST
-  const nuevoProducto = req.body;
-  //la función appendFile() del módulo fs de Node.js agrega el contenido de nuevoProducto al final del archivo productos.txt".
-  //Convierto el objeto nuevoProducto a una cadena de texto JSON y agrego un separador de línea ("\n") al final de la cadena
-  //pa que c/producto esté en una línea separada.
-  fs.appendFile("productos.txt", JSON.stringify(nuevoProducto) + "\n","utf8",(err) => {
+  // leo el archivo 'productos.txt'
+  fs.readFile("productos.txt", "utf8", (err, data) => {
+  // si hay un error al leer el archivo, envio la respuesta con  código 500 (Internal Server Error)
+    if (err) {
+      console.error(err);
+      res.status(500).send("Error al agregar el producto");
+      return;
+    }
+  // convierto el contenido del archivo en un array que contiene el objeto dividido en líneas
+    const productos = data.trim().split("\n").map((producto) => JSON.parse(producto));
+  //req.body es el objeto que contiene los datos enviados por el cliente en la solicitud POST
+    const nuevoProducto = req.body;
+  // generos un id único para el producto que se agregará (el id será igual a la cantidad de productos existentes + 1)
+  //reduce() para iterar sobre el array de productos y encontrar el valor máximo del ID
+  //En cada iteración, se compara el ID del producto actual con el valor actual máximo. Si el ID del producto actual es mayor que el valor 
+  //actual máximo, se establece el valor actual máximo en el ID del producto actual. 
+  //El segundo argumento de la función reduce() establece el valor inicial del valor actual máximo en 0
+    const maxId = productos.reduce((max, producto) => {
+      return producto.id > max ? producto.id : max}, 0);
+  //sumo 1 al valor máximo del ID encontrado en la línea anterior para obtener el nuevo ID para el nuevo producto
+    const idNuevoProducto = maxId + 1;
+  // creo el objeto 'productoConId' que incluye el nuevo id generado y las propiedades del nuevo producto obtenidas del body
+    const productoConId = {
+      id: idNuevoProducto,
+      nombre: nuevoProducto.nombre,
+      precio: nuevoProducto.precio,
+      unidades: nuevoProducto.unidades,
+      categoria: nuevoProducto.categoria,
+      descripción: nuevoProducto.descripción
+    };
+  // agrego el nuevo producto al final del array de productos
+    productos.push(productoConId);
+  //Con .map itero sobre c/pdto en productos (q ya contiene el nuevo pdto) convirtiendolo en lineas de cadena JSON,
+  //y las uno con join(). Guardo esta cadena en productoNuevo para poderlo guardar correctamente el el archivo productos
+    const productoNuevo = productos.map((producto) => JSON.stringify(producto)).join('\n');
+    fs.writeFile("productos.txt", productoNuevo, (err) => {
       if (err) {
         console.error(err);
         res.status(500).send("Error al agregar el producto");
         return;
       }
-  //res.status(201) genera el código de estado HTTP de la rpta en "201 Created", indicando q se ha creado un nuevo recurso en el servidor
-  //.json(nuevoProducto) hace q nuevoProducto se convierta en un objeto JSON y se envíe al cliente como la respuesta
-      res.status(201).json(nuevoProducto);
-    }
-  );
+  //Envío la respuesta HTTP con código 201 (creado) y el JSON del producto que se agregó al archivo
+      res.status(201).send(JSON.stringify(productoConId));
+    });
+  });
 });
 
 
@@ -121,7 +170,7 @@ app.put('/productos/:id', (req, res) => {
         res.status(500).send('Error al actualizar el producto');
         return;
       }
-      // Envio el objeto actualizado como respuesta en formato JSON
+    // Envio el objeto actualizado como respuesta en formato JSON
       res.json(productoActualizado);
     });
   });

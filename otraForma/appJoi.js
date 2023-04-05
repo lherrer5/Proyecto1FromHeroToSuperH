@@ -4,11 +4,11 @@
     const app = express();
     const PORT = 3050;
 
-    // Middleware para parsear el body de las solicitudes
+    //Agrego el middleware express.json() a la app pa analizar solicitudes entrantes (en formato JSON) y cargarla en req.body (de JSON a JS)
     app.use(express.json());
 
 
-      //Esquema validación para tus datos. Por ejemplo, podrías definir un esquema de validación para el objeto nuevoProducto en la ruta POST /productos
+      //Requisitos para la validación de datos. 
       const nuevoProductoSchema = Joi.object({
         nombre: Joi.string().required(),
         descripción: Joi.string().required(),

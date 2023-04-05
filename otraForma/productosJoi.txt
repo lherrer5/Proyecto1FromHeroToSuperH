@@ -1,1 +1,2 @@
 {"nombre":"camisa","precio":80,"unidades":30,"descripción":"camisa para mujer y hombre talla unica"}
+{"nombre":"gorra","precio":50,"unidades":7,"descripción":"gorra de algodon para niños"}
