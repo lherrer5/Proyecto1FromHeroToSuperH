@@ -11,9 +11,10 @@
       //Requisitos para la validación de datos. 
       const nuevoProductoSchema = Joi.object({
         nombre: Joi.string().required(),
-        descripción: Joi.string().required(),
         precio: Joi.number().positive().required(),
-        unidades: Joi.number().integer().positive().required()
+        unidades: Joi.number().integer().positive().required(),
+        categoria: Joi.string().required(),
+        descripción: Joi.string().required()
       });
 
     // Ruta para agregar un nuevo producto
@@ -52,7 +53,7 @@ app.get("/productos", (req, res) => {
       return;
     }
     const productos = data.trim().split("\n").map(JSON.parse);
-    res.status(200).json(productos);
+    res.json(productos);
   });
 });
 

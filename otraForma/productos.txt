@@ -1,2 +1,1 @@
 {"id":5,"nombre":"gorra","precio":"50","unidades":"7","categoria":"niños","descripción":"gorra de algodon para niños"}
-{"id":2,"nombre":"bolso","precio":30,"unidades":40,"categoria":"mujer","descripción":"bolso para mujer en cuero"}
