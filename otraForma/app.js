@@ -3,12 +3,17 @@ const fs = require("fs");
 //Creo mi app con función express()
 const app = express();
 //Creo puerto
-const PORT = 3030;
+const PORT = 3031;
+
 
 // Middleware (q se ejecutan despues de recibir la solicitud y antes d enviar la respuesta) para parsear el body de las solicitudes
 //analiza los datos enviados en la solicitud HTTP con el tipo de contenido application/json
 //La función express.json() analiza estos datos JSON y los convierte en un objeto JavaScript agregandolos a la request de la solicitud
 app.use(express.json());
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+});
 
 // Ruta para obtener todos los productos
 app.get("/productos", (req, res) => {
