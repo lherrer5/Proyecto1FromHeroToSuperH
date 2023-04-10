@@ -10,7 +10,7 @@
 
       //Requisitos para la validación de datos. 
       const nuevoProductoSchema = Joi.object({
-        nombre: Joi.string().required(),
+        nombre: Joi.string().min(2).max(12).required(),
         precio: Joi.number().positive().required(),
         unidades: Joi.number().integer().positive().required(),
         categoria: Joi.string().required(),
@@ -22,7 +22,10 @@
     // utilizo el método validate de Joi para validar el objeto req.body (los datos enviados por el cliente) con el esquema
     //de validación nuevoProductoSchema. Si hay algún error de validación, devuelvo un mensaje de error al cliente utilizando el 
     //código de estado HTTP 400 (Bad Request). Si los datos son válidos, continuo con el proceso de agregar el nuevo producto.
-      const { error, value } = nuevoProductoSchema.validate(req.body);
+      const { error, value } = nuevoProductoSchema.validate(req.body, {
+    //para que no se detenga en el primer error, sino q envie al cliente todos los errores juntos
+        abortEarly: false,
+      });
       if (error) {
         // Si hay un error de validación, devolvemos un mensaje de error al cliente
         res.status(400).send(error.details[0].message);
@@ -67,6 +70,7 @@ app.get("/productos/:nombre", (req, res) => {
       return;
     }
     const productos = data.trim().split("\n").map(JSON.parse);
+  //busco el primer objeto JSON en productos q tenga el nombre igual al valor de la constante "nombre" y find() devuelve el objeto encontrado o undefined si no se encuentra ningún objeto.
     const producto = productos.find(p => p.nombre === nombre);
     if (producto) {
       res.status(200).json(producto);
@@ -80,11 +84,18 @@ app.get("/productos/:nombre", (req, res) => {
 // Actualizar un producto existente
 app.put("/productos/:nombre", (req, res) => {
   const nombre = req.params.nombre;
-  const { error, value } = nuevoProductoSchema.validate(req.body);
+  // utilizo el método validate de Joi para validar el objeto req.body (los datos enviados por el cliente) con el esquema
+  //de validación nuevoProductoSchema. Si hay algún error de validación, devuelvo un mensaje de error al cliente utilizando el 
+  //código de estado HTTP 400 (Bad Request). Si los datos son válidos, continuo con el proceso de agregar el nuevo producto.
+  const { error, value } = nuevoProductoSchema.validate(req.body, {
+    //para que no se detenga en el primer error, sino q envie al cliente todos los errores juntos
+        abortEarly: false,
+      });
   if (error) {
     res.status(400).send(error.details[0].message);
     return;
   }
+  // Los datos son válidos, continuamos con el proceso de actualizar el producto
   const nuevoProducto = value;
   fs.readFile("productosJoi.txt", "utf8", (err, data) => {
     if (err) {
@@ -113,7 +124,10 @@ app.put("/productos/:nombre", (req, res) => {
 // Actualizar parcialmente un producto existente
 app.patch("/productos/:nombre", (req, res) => {
   const nombre = req.params.nombre;
-  const { error, value } = nuevoProductoSchema.validate(req.body);
+  const { error, value } = nuevoProductoSchema.validate(req.body, {
+    //para que no se detenga en el primer error, sino q envie al cliente todos los errores juntos
+        abortEarly: false,
+      });
   if (error) {
     res.status(400).send(error.details[0].message);
     return;
