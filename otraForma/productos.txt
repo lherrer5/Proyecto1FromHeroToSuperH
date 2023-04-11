@@ -3,3 +3,4 @@
 {"id":3,"nombre":"gorra","precio":"50","unidades":"7","categoria":"niños","descripción":"gorra de algodon para niños"}
 {"id":4,"nombre":"gorra","precio":"50","unidades":"7","categoria":"niños","descripción":"gorra de algodon para niños"}
 {"id":5,"nombre":"gorra","precio":"50","unidades":"7","categoria":"niños","descripción":"gorra de algodon para niños"}
+{"id":6,"nombre":"carro","precio":"0.02","unidades":"1","categoria":"hombre"}

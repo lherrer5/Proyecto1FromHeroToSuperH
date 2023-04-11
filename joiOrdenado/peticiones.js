@@ -2,7 +2,7 @@ const botonGet = document.getElementById('get');
 botonGet.addEventListener('click', () => {
     const productosDiv = document.getElementById('productos');
 
-    fetch('http://localhost:3031/productos')
+    fetch('http://localhost:3060/productos')
         .then(response => response.json())
         .then(data => {
             data.forEach(producto => {

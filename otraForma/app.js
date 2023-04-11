@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 //Creo mi app con función express()
 const app = express();
+const cors = require('cors');
 //Creo puerto
 const PORT = 3031;
 
@@ -10,6 +11,7 @@ const PORT = 3031;
 //analiza los datos enviados en la solicitud HTTP con el tipo de contenido application/json
 //La función express.json() analiza estos datos JSON y los convierte en un objeto JavaScript agregandolos a la request de la solicitud
 app.use(express.json());
+app.use(cors());
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   next();

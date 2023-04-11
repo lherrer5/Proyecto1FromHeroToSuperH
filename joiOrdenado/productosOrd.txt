@@ -1,2 +1,13 @@
 {"id":1,"nombre":"camisa","precio":80,"unidades":30,"categoria":"unisex","descripción":"camisa para mujer y hombre talla unica"}
 {"id":2,"nombre":"bolso","precio":30,"unidades":40,"categoria":"mujer","descripción":"bolso para mujer en cuero"}
+{"id":3,"nombre":"reloj","precio":120,"unidades":25,"categoria":"unisex","descripción":"reloj de pulsera para hombre y mujer con correa de cuero"}
+{"id":4,"nombre":"gorra","precio":20,"unidades":50,"categoria":"hombre","descripción":"gorra de béisbol para hombre en color negro"}
+{"id":5,"nombre":"vestido","precio":90,"unidades":20,"categoria":"mujer","descripción":"vestido para mujer en color azul marino"}
+{"id":6,"nombre":"chaqueta","precio":150,"unidades":15,"categoria":"hombre","descripción":"chaqueta de cuero para hombre en color marrón"}
+{"id":7,"nombre":"falda","precio":70,"unidades":25,"categoria":"mujer","descripción":"falda para mujer en estampado floral"}
+{"id":8,"nombre":"shorts","precio":40,"unidades":30,"categoria":"niño","descripción":"shorts para niño en color rojo"}
+{"id":9,"nombre":"mochila","precio":60,"unidades":20,"categoria":"unisex","descripción":"mochila para hombre y mujer en color negro"}
+{"id":10,"nombre":"abrigo","precio":180,"unidades":10,"categoria":"mujer","descripción":"abrigo largo para mujer en color beige"}
+{"id":11,"nombre":"gafas de sol","precio":25,"unidades":35,"categoria":"unisex","descripción":"gafas de sol con montura negra"}
+{"id":12,"nombre":"jersey","precio":60,"unidades":30,"categoria":"hombre","descripción":"jersey de lana para hombre en color gris"}
+{"id":13,"nombre":"carro","precio":0.02,"unidades":2,"categoria":"niño","descripción":"fdgdgfh"}

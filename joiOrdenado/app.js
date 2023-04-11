@@ -1,11 +1,12 @@
 const express = require("express");
-const Joi = require('joi');
 const { validateSignup } = require("./validator");
 const fs = require("fs");
 const app = express();
+const cors = require('cors');
 const PORT = 3060;
 
 app.use(express.json());
+app.use(cors());
 
 // Ruta para agregar un nuevo producto
 // app.post("/productos", (req, res) => {
