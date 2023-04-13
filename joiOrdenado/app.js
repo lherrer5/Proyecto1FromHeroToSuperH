@@ -3,6 +3,7 @@ const { validateSignup } = require("./validator");
 const fs = require("fs");
 const app = express();
 const cors = require('cors');
+//cors se usa pa habilitar el acceso a recursos de un dominio diferente al de la página web que realiza la petición
 const PORT = 3060;
 
 app.use(express.json());
