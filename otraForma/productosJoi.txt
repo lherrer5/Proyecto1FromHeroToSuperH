@@ -1,2 +1,1 @@
-
-{"nombre":"gorra","precio":50,"unidades":7,"categoria":"hombre","descripción":"gorra de algodon para niños"}
+{"nombre":"gorra","precio":22,"unidades":4,"categoria":"hombre","descripción":"gorra de algodon para niños"}

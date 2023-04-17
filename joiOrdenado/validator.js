@@ -13,4 +13,20 @@ const nuevoProductoSchema = Joi.object({
     descripción: Joi.string().required()
 });
 
+const actProducto = Joi.object({
+    id: Joi.number().required(),
+    nombre: Joi.string().optional(),
+    precio: Joi.number().optional(),
+    unidades: Joi.number().optional(),
+    categoria: Joi.string().optional(),
+    descripción: Joi.string().optional()
+}).min(1);
+
+const delProducto = Joi.object({
+    id: Joi.number().integer().required()
+  });
+  
+
 exports.validateSignup= validator(nuevoProductoSchema)
+exports.validateActProducto = validator(actProducto)
+exports.validateDelProducto = validator(delProducto)
