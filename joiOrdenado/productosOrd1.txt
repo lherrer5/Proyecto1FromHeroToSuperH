@@ -1,0 +1,3 @@
+{"id":"1","nombre":"pantalon","precio":"180","unidades":"10","categoria":"hombre","descripción":"pantalon de drill para hombre"}
+{"id":2,"nombre":"falda","precio":90,"unidades":25,"categoria":"mujer","descripción":"falda corta para mujer"}
+{"id":3,"nombre":"short","precio":40,"unidades":10,"categoria":"niño","descripción":"short de colores para niño"}
