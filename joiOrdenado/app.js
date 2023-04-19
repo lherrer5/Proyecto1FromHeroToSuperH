@@ -23,7 +23,20 @@ app.get("/productos", (req, res) => {
             res.status(500).send("Error al obtener los productos");
             return;
         }
-        const productos = data.trim().split("\n").map(JSON.parse);
+        //validación archivo vacio
+        if (!data || data.trim() === "") {
+            res.json([]);
+            return;
+        }
+        let productos = [];
+        try {
+            productos = JSON.parse(data.trim());
+        } catch (e) {
+            console.error(e);
+            res.status(500).send("Error al obtener los productos");
+            return;
+        }
+        //const productos = data.trim().split("\n").map(JSON.parse);
         res.json(productos);
     });
 });
@@ -35,6 +48,10 @@ app.get("/productos/:nombre", (req, res) => {
         if (err) {
             console.error(err);
             res.status(500).send("Error al obtener los productos");
+            return;
+        }
+        if (!data || data.trim() === "") {
+            res.status(404).send("Producto no encontrado");
             return;
         }
         const productos = data.trim().split("\n").map(JSON.parse);
@@ -68,7 +85,6 @@ app.post("/productos", (req, res) => {
         if (data) {
             productos = data.trim().split("\n").map((producto) => JSON.parse(producto));
         }
-
         //const productos = data.trim().split("\n").map((producto) => JSON.parse(producto));
         const maxId = productos.reduce((max, producto) => {
             return producto.id > max ? producto.id : max;
@@ -150,6 +166,12 @@ app.delete("/productos/:id", (req, res) => {
             res.status(500).send("Error al eliminar el producto");
             return;
         }
+        // Validar archivo vacío
+        if (!data || data.trim() === "") {
+            res.status(404).send("Producto no encontrado");
+            return;
+        }
+
         const productos = data.trim().split("\n").map((producto) => JSON.parse(producto));
         const indiceProducto = productos.findIndex((producto) => producto.id.toString() == id);
         if (indiceProducto === -1) {
@@ -168,34 +190,6 @@ app.delete("/productos/:id", (req, res) => {
         );
     });
 });
-
-// Eliminar un producto existente con NOMBRE
-// app.delete("/productos/:nombre", (req, res) => {
-//     const nombre = req.params.nombre;
-//     fs.readFile("productosOrd.txt", "utf8", (err, data) => {
-//         if (err) {
-//             console.error(err);
-//             res.status(500).send("Error al obtener los productos");
-//             return;
-//         }
-//         let productos = data.trim().split("\n").map(JSON.parse);
-//         const productoIndex = productos.findIndex(p => p.nombre === nombre);
-//         if (productoIndex !== -1) {
-//             productos.splice(productoIndex, 1);
-//             fs.writeFile("productosOrd.txt", productos.map(JSON.stringify).join("\n") + "\n", "utf8", err => {
-//                 if (err) {
-//                     console.error(err);
-//                     res.status(500).send("Error al eliminar el producto");
-//                     return;
-//                 }
-//                 res.status(204).send();
-//             });
-//         } else {
-//             res.status(404).send("Producto no encontrado");
-//         }
-//     });
-// });
-
 
 // Iniciar el servidor
 app.listen(PORT, () => {

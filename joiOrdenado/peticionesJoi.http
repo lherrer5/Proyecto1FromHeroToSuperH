@@ -27,9 +27,6 @@ Content-Type: application/json
 ###DELETE con ID unico
 DELETE http://localhost:3060/productos/1 HTTP/1.1
 
-###DELETE con PRODUCTO (no esta funcionando aun)
-DELETE http://localhost:3060/productos/corbata HTTP/1.1
-
 
 #    {
 #     "id": 1,

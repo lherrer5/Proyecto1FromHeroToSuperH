@@ -24,8 +24,8 @@ const actProducto = Joi.object({
 
 const delProducto = Joi.object({
     id: Joi.number().integer().required()
-  });
-  
+});
+
 
 exports.validateSignup= validator(nuevoProductoSchema)
 exports.validateActProducto = validator(actProducto)

@@ -1,1 +1,0 @@
-{"id":1,"nombre":"pantalon","precio":120,"unidades":25,"categoria":"hombre","descripción":"pantalon de drill para hombre"}
