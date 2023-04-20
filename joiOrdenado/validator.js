@@ -14,7 +14,7 @@ const nuevoProductoSchema = Joi.object({
 });
 
 const actProducto = Joi.object({
-    id: Joi.number().required(),
+    // id: Joi.number().required(),
     nombre: Joi.string().optional(),
     precio: Joi.number().optional(),
     unidades: Joi.number().optional(),

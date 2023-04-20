@@ -12,7 +12,7 @@ app.use(cors());
 
 // Comprobar si el archivo existe, si no existe, crearlo con un arreglo vacío
 if (!fs.existsSync("./productosOrd.txt")) {
-    fs.writeFileSync("./productosOrd.txt", "");
+    fs.writeFileSync("./productosOrd.txt", "[]");
 }
 
 // Obtener todos los productos
@@ -36,7 +36,6 @@ app.get("/productos", (req, res) => {
             res.status(500).send("Error al obtener los productos");
             return;
         }
-        //const productos = data.trim().split("\n").map(JSON.parse);
         res.json(productos);
     });
 });
@@ -54,7 +53,7 @@ app.get("/productos/:nombre", (req, res) => {
             res.status(404).send("Producto no encontrado");
             return;
         }
-        const productos = data.trim().split("\n").map(JSON.parse);
+        const productos = JSON.parse(data.trim());
         const producto = productos.find(p => p.nombre === nombre);
         if (producto) {
             res.status(200).json(producto);
@@ -64,8 +63,7 @@ app.get("/productos/:nombre", (req, res) => {
     });
 });
 
-
-//POST con ID único (pdto nuevo)
+//POST generando ID unico
 app.post("/productos", (req, res) => {
     const { error, value } = validateSignup(req.body, { abortEarly: false });
     if (error) {
@@ -80,12 +78,14 @@ app.post("/productos", (req, res) => {
             res.status(500).send("Error al agregar el producto");
             return;
         }
-        //validación del archivo productsOrd.txt vacio
         let productos = [];
-        if (data) {
-            productos = data.trim().split("\n").map((producto) => JSON.parse(producto));
+        try {
+            productos = JSON.parse(data);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Error al agregar el producto");
+            return;
         }
-        //const productos = data.trim().split("\n").map((producto) => JSON.parse(producto));
         const maxId = productos.reduce((max, producto) => {
             return producto.id > max ? producto.id : max;
         }, 0);
@@ -99,7 +99,7 @@ app.post("/productos", (req, res) => {
             descripción: nuevoProducto.descripción,
         };
         productos.push(productoConId);
-        const productoNuevo = productos.map((producto) => JSON.stringify(producto)).join("\n");
+        const productoNuevo = JSON.stringify(productos);
         fs.writeFile("productosOrd.txt", productoNuevo, (err) => {
             if (err) {
                 console.error(err);
@@ -111,8 +111,7 @@ app.post("/productos", (req, res) => {
     });
 });
 
-
-// Ruta para actualizar solo una pequeña parte de un pdto existente
+// Actualizar un producto por su ID
 app.patch("/productos/:id", (req, res) => {
     const id = req.params.id;
     const { error, value } = validateActProducto(req.body, { abortEarly: false });
@@ -126,19 +125,19 @@ app.patch("/productos/:id", (req, res) => {
             res.status(500).send("Error al actualizar el producto");
             return;
         }
-        let productos = data.trim().split("\n").map((producto) => JSON.parse(producto));
-        const productoIndex = productos.findIndex((producto) => producto.id.toString() == id);
+        let productos = JSON.parse(data.trim());
+        const productoIndex = productos.findIndex((producto) => producto.id.toString() === id);
         if (productoIndex === -1) {
             res.status(404).send("Producto no encontrado");
             return;
         }
         const productoActualizado = {
             ...productos[productoIndex],
-            ...value
+            ...value,
         };
         productos[productoIndex] = productoActualizado;
 
-        const productoNuevo = productos.map((producto) => JSON.stringify(producto)).join("\n");
+        const productoNuevo = JSON.stringify(productos, null, 2);
         fs.writeFile("productosOrd.txt", productoNuevo, (err) => {
             if (err) {
                 console.error(err);
@@ -150,8 +149,7 @@ app.patch("/productos/:id", (req, res) => {
     });
 });
 
-
-// Ruta para eliminar un producto existente con ID
+//DELETE por ID
 app.delete("/productos/:id", (req, res) => {
     const { error } = validateDelProducto(req.params);
     if (error) {
@@ -172,14 +170,14 @@ app.delete("/productos/:id", (req, res) => {
             return;
         }
 
-        const productos = data.trim().split("\n").map((producto) => JSON.parse(producto));
+        const productos = JSON.parse(data);
         const indiceProducto = productos.findIndex((producto) => producto.id.toString() == id);
         if (indiceProducto === -1) {
             res.status(404).send("Producto no encontrado");
             return;
         }
         const productoEliminado = productos.splice(indiceProducto, 1)[0];
-        fs.writeFile("productosOrd.txt", productos.map((producto) => JSON.stringify(producto)).join("\n"), "utf8", (err) => {
+        fs.writeFile("productosOrd.txt", JSON.stringify(productos), "utf8", (err) => {
             if (err) {
                 console.error(err);
                 res.status(500).send("Error al eliminar el producto");
@@ -195,3 +193,4 @@ app.delete("/productos/:id", (req, res) => {
 app.listen(PORT, () => {
     console.log(`El servidor esta escuchando en el puerto ${PORT}...`);
 });
+
